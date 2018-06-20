@@ -1,0 +1,82 @@
+{% extends 'views/layout.html' %}
+
+{% import 'components/navbar.html' as navbar %}
+{% import 'macros/message.html' as message %}
+
+{# 浏览器标题 #} {% block title -%}
+  发布一个 - 兴小院
+{%- endblock title %}
+
+{# 顶部导航栏 #} {% block navbar %}
+  {{ navbar.place(fixed_top = False,
+                  items = [ {'endpoint': 'main.logout_view', 'name': '退出'}]) }}
+{% endblock navbar %}
+
+
+{# 顶部导航栏下内容区 #} {% block content %}
+  <div class="container-fluid">
+
+    <div class="card p-4 mt-4"
+         style="min-height: 415px;">
+      <h5 class="text-center mt-2 mb-3">填写任务表单</h5>
+      {% set errors = form.title.errors +
+                      form.content.errors +
+                      form.picture.errors %}
+      {{ message.show_and_from_server(messages=errors[:1]) }}
+      <form action="{{ url_for('main.post_view') }}"
+            method="post"
+            enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+          <label class="mb-1 ml-2"
+                 style="font-size: small;
+                      color: #888;">
+            *必填。标题；发布作业时，将会显示在主页列表中
+          </label>
+          {{ form.title(class='form-control input-lg',
+                        placeholder='输入标题',
+                        required='') }}
+        </div>
+
+        <div class="form-group">
+          <label class="mb-1 ml-2"
+                 style="font-size: small;
+                      color: #888;">
+            *必填。作业的具体内容
+          </label>
+          {{ form.content(class='form-control',
+                          placeholder='输入作业的具体内容',
+                          required='') }}
+        </div>
+
+        <div class="form-group">
+          <label class="mb-1 ml-2"
+                 style="font-size: small;
+                      color: #888;">
+            *必填。完成后的效果图
+          </label>
+          {{ form.picture(class='form-control',
+                          required='') }}
+        </div>
+
+        <div class="form-group">
+          <button class="btn btn-primary btn-lg btn-block">填写完成，发布！</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock content %}
+
+{# 页脚 #} {% block footer %}
+  <footer class=" text-center mt-5 mb-2"
+          style="color: #8590a6;
+                 font-size: small;">
+    © 2018 fushall
+  </footer>
+{% endblock footer %}
+
+
+{# js脚本 #} {% block scripts %}
+  {{ super() }}
+  <script></script>
+{% endblock scripts %}

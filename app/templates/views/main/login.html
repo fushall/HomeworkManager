@@ -1,0 +1,81 @@
+{% extends 'views/layout.html' %}
+
+{% import 'components/navbar.html' as navbar %}
+{% import 'macros/message.html' as message %}
+
+{# 浏览器标题 #} {% block title -%}
+  登陆 - 15计本1
+{%- endblock title %}
+
+
+{# 顶部导航栏 #} {% block navbar %}
+  {{ navbar.place(fixed_top = False) }}
+{% endblock navbar %}
+
+
+{# 顶部导航栏下内容区 #} {% block content %}
+  <div class="container-fluid">
+    <div class="card p-2">
+      <h5 class="text-center mt-5">方便，从这里开始</h5>
+
+      <form class="mt-4" action="{{ url_for('main.login_view') }}" method="post">
+        {% set errors = form.number.errors +
+                        form.name.errors%}
+        {{ message.show_and_from_server(messages=errors[:1]) }}
+        <div class="form-group">
+          {{ form.hidden_tag() }}
+          {{ form.number(required="",
+                         class="form-control",
+                         placeholder="输入学号",
+                         style="position: relative;
+                                padding: 10px;
+                                margin-bottom: -1px;
+                                border-bottom-right-radius: 0;
+                                border-bottom-left-radius: 0;") }}
+           {{ form.name(required="",
+                        class="form-control",
+                        placeholder="输入姓名",
+                        style="position: relative;
+                               padding: 10px;
+                               order-top-right-radius: 0;
+                               border-top-left-radius: 0;") }}
+
+        </div>
+        <div class="form-check d-flex justify-content-between">
+          {{ form.remember(class="form-check-input") }}
+          {{ form.remember.label(class='form-check-label')}}
+        </div>
+        <div class="form-group mt-4">
+          <button class="btn btn-primary btn-lg btn-block" type="submit"
+                  style="margin-bottom: 70px;">进入个人中心
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock content %}
+
+
+{# 页脚 #} {% block footer %}
+  <footer class="fixed-bottom text-center mb-2"
+          style="color: #8590a6;
+                 font-size: small;">
+    © 2018 fushall
+  </footer>
+{% endblock footer %}
+
+{# js脚本 #} {% block scripts %}
+  {{ super() }}
+  <script>
+
+    let input = $('input.form-control');
+
+    input.focus(function () {
+      $(this).css('z-index', 2);
+
+    }).blur(function () {
+      $(this).css('z-index', 'auto');
+
+    })
+  </script>
+{% endblock scripts %}

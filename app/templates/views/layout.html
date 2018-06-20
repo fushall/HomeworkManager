@@ -1,0 +1,32 @@
+{% extends 'bootstrap4.html' %}
+
+
+{# 浏览器标题 #} {% block title -%}
+  # 模板页
+{%- endblock title %}
+
+{# 顶部导航栏 #} {% block navbar %}
+{% endblock navbar %}
+
+{# 顶部导航栏下内容区 #} {% block content %}
+{% endblock content %}
+
+{# js脚本 #} {% block scripts %}
+  {{ super() }}
+  <script></script>
+{% endblock scripts %}
+
+{# 自定义样式 #} {% block styles %}
+  {{ super() }}
+  <style>
+    body {
+      background: #EBEBEB;
+      margin: 60px auto 0 auto;
+      max-width: 375px;
+    }
+
+  .container-fluid {
+    padding: 0;
+  }
+  </style>
+{% endblock styles %}

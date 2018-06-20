@@ -1,0 +1,51 @@
+{# navbar组件 #}
+
+
+{% macro nav_title(title, endpoint='main.index_view') %}
+  <a class="navbar-brand font-weight-bold"
+     href="{{ url_for(endpoint) }}"
+     style="font-size: x-large;
+            color: #A5313C">
+
+    {{ title }}
+  </a>
+{% endmacro %}
+
+
+
+{% macro nav_link(name, endpoint) %}
+  <div>
+    <a href="{{ url_for(endpoint) }}">{{ name }}</a>
+  </div>
+{% endmacro %}
+
+
+{% macro place(title='15计本1', items=None, fixed_top=True) %}
+  {% if fixed_top %}
+    <script>$('body').css('margin', '60px auto 0 auto');</script>
+  {% else %}
+    <script>$('body').css('margin', '0 auto');console.log(666)</script>
+  {% endif %}
+  <nav class="navbar navbar-light bg-light {% if fixed_top %}fixed-top{% endif %}"
+       style="max-width: 375px;
+              padding-top: 5px;
+              padding-bottom: 0;
+              margin: 0px auto;
+              border-bottom: .05rem solid #e5e5e5;">
+    {{ nav_title(title) }}
+
+    {% if items %}
+      <div style="display: flex;">
+        {% for item in items %}
+          {% if is_str(item) %}
+            <div style="padding: 0 5px;
+                        color: gray;">
+              {{ item }}</div>
+          {% else %}
+            {{ nav_link(item['name'], item['endpoint']) }}
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </nav>
+{% endmacro %}

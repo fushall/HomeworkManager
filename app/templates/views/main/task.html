@@ -1,0 +1,96 @@
+{% extends 'views/layout.html' %}
+
+
+{# 导入组件 #}
+{% import 'components/navbar.html' as navbar %}
+{% import 'macros/message.html' as message %}
+
+{# 浏览器标题 #} {% block title -%}
+  # 模板页
+{%- endblock title %}
+
+{# 顶部导航栏 #} {% block navbar %}
+  {% if current_user.is_authenticated %}
+    {% set nav_link = [{'endpoint': 'main.logout_view', 'name': '退出'}] %}
+  {% else %}
+    {% set nav_link = ['登陆后有更多详情>>>', {'endpoint': 'main.login_view', 'name': '登陆'}] %}
+  {% endif %}
+  {{ navbar.place(fixed_top=False, items=nav_link) }}
+{% endblock navbar %}
+
+{# 顶部导航栏下内容区 #} {% block content %}
+  <div class="container-fluid">
+
+
+    {% if not task %}
+      <h4 class="mt-5 text-center">404， 这个任务不存在哦</h4>
+    {% else %}
+
+      <div class="card rounded-0 mt-3">
+        <div class="card-header">
+          <div class="text-left">{{ task.title }}</div>
+        </div>
+        <div class="card-body">
+          <p>创建时间：{{ task.created_at }}</p>
+          <p>完成人数：{{ task.userfile_count }}</p>
+          <p>内容如下：</p>
+          <p>{{ task.content }}</p>
+          <img class="w-100" src="{{ task.picture.url }}">
+
+          <p>未完成名单：</p>
+          {% if current_user.number == '20151104450' %}
+            {% for user in task.not_completed_users() %}
+              <p>{{ user.number }}  {{ user.name }}</p>
+            {% endfor %}
+          {% endif %}
+          <p>下载任务文件：</p>
+          <div>任务文件。。。。</div>
+        </div>
+      </div>
+
+      {% if current_user.is_authenticated %}
+        <form class="card mt-4"
+              method="post"
+              enctype="multipart/form-data">
+          {% set errors = form.userfile.errors %}
+          {{ message.show_and_from_server(errors[:1]) }}
+          {% if current_user.is_completed_task(task) %}
+            <div class="card-body">
+              <h4>你已经完成该任务!</h4>
+              <p>删除作品后，即可重新提交</p>
+              <a href="{{ current_user.get_userfile(task).file.url }}">
+                {{ current_user.get_userfile(task).file.name }} {{ current_user.get_userfile(task).file.size/1024 }}kb (点击可下载)</a>
+              <a role="button" href="{{ url_for('main.delete_userfile', task_id=task.id) }}"
+                 class="btn btn-primary">删除</a>
+            </div>
+
+          {% else %}
+
+            <div class="card-body">
+              <h4>你还没有完成该任务！</h4>
+              {{ form.hidden_tag() }}
+              {{ form.userfile(class='form-control',
+                               required='') }}
+              <div class="form-control">
+                <button class="btn btn-primary" type="submit">提交作品</button>
+              </div>
+            </div>
+            </form>
+          {% endif %}
+      {% endif %}
+
+      <div style="height: 100px;"></div>
+    {% endif %}
+
+  </div>
+{% endblock content %}
+
+{# js脚本 #} {% block scripts %}
+  {{ super() }}
+  <script></script>
+{% endblock scripts %}
+
+{# 自定义样式 #} {% block styles %}
+  {{ super() }}
+  <style></style>
+{% endblock styles %}

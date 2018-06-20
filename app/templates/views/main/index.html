@@ -1,0 +1,92 @@
+{% extends 'views/layout.html' %}
+
+
+{# 导入组件 #}
+{% import '/components/navbar.html' as navbar %}
+
+{# 浏览器标题 #} {% block title -%}
+  # 模板页
+{%- endblock title %}
+
+{# 顶部导航栏 #} {% block navbar %}
+  {% if current_user.is_authenticated %}
+    {% set nav_link = [{'endpoint': 'main.logout_view', 'name': '退出'}] %}
+  {% else %}
+    {% set nav_link = ['登陆后有更多详情>>>', {'endpoint': 'main.login_view', 'name': '登陆'}] %}
+  {% endif %}
+  {{ navbar.place(fixed_top=False, items=nav_link) }}
+{% endblock navbar %}
+
+{# 顶部导航栏下内容区 #} {% block content %}
+  <div class="container-fluid">
+
+    <div class="card rounded-0 mt-3">
+      <div class="card-header d-flex justify-content-between">
+        <div class="text-left">信息栏</div>
+        <div class="text-right">班级活跃人数：43人</div>
+      </div>
+      <div class="card-body">
+        {% if current_user.is_authenticated %}
+          <p>学号：{{ current_user.number }}</p>
+          <p>姓名：{{ current_user.name }}</p>
+          <p>你未完成的任务如下：</p>
+          {% for task in tasks %}
+            {% if task.user_is_not_completed(current_user) %}
+              <label>
+                {{ task.title }}，
+                <a href="{{ url_for('main.task_view', task_id=task.id) }}">去完成</a>
+              </label>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+
+
+      {% if current_user.number == '20151104450' %}
+        <a class="mt-3 btn btn-primary btn-lg btn-block"
+           href="{{ url_for('main.post_view') }}"
+           role="button">发布任务</a>
+      {% endif %}
+   
+
+    {% if not tasks %}
+      <h4 class="mt-5 text-center">当前没有发布任何任务</h4>
+    {% else %}
+      {% for task in tasks %}
+        <div class="card rounded-0 mt-2">
+          <div class="card-header d-flex justify-content-between">
+            {% set title = task.title %}
+            {% if current_user.is_authenticated %}
+              {% if current_user.is_completed_task(task) %}
+                {% set status = '[完成√] ' %}
+              {% else %}
+                {% set status = '[未完成×] ' %}
+              {% endif %}
+            {% else %}
+              {% set status = '' %}
+            {% endif %}
+            <a class="text-left" href="{{ url_for('main.task_view', task_id=task.id) }}">{{ status }}{{ title }}</a>
+
+          </div>
+          <div class="card-body">
+            <p>创建时间：{{ task.created_at }}</p>
+            <p>完成人数：{{ task.userfile_count }}人</p>
+
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+  </div>
+{% endblock content %}
+
+{# js脚本 #} {% block scripts %}
+  {{ super() }}
+  <script></script>
+{% endblock scripts %}
+
+{# 自定义样式 #} {% block styles %}
+  {{ super() }}
+  <style></style>
+{% endblock styles %}

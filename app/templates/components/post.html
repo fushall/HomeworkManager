@@ -1,0 +1,44 @@
+{# 帖子列表 #}
+
+
+
+{% macro pictures(urls) %}
+  {% for url in urls if urls %}
+    <img style="width: 100px;
+                  height:100px;
+                  display: inline-block;"
+         src="{{ url }}">
+  {% endfor %}
+{% endmacro %}
+
+
+
+{% macro contents(title, content, time) %}
+  <div>{{ time }}</div>
+  <div style="color: #212529;
+                  -webkit-line-clamp: 2;
+                  display: -webkit-box;
+                  -webkit-box-orient:vertical;
+                  text-overflow: ellipsis;
+                  overflow: hidden;">
+    {{ title + '　' + content }}
+  </div>
+{% endmacro %}
+
+
+
+{% macro place(title, content, time, pic_urls) %}
+  <div class="card border-0"
+       style="border-radius: 0;">
+    <div class="card-body">
+      {{ contents(title, content, time) }}
+    </div>
+    <div style="min-width: 99%;
+                overflow: scroll;
+                white-space: nowrap;">
+      {{ pictures(pic_urls) }}
+    </div>
+  </div>
+{% endmacro %}
+
+
